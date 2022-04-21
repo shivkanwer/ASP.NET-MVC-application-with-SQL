@@ -1,0 +1,39 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: movie-rentals-ns
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: movie-rentals-app-deployment
+  namespace: movie-rentals-ns
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: movie-rentals-app
+  template:
+    metadata:
+      labels:
+        app: movie-rentals-app
+    spec:
+      nodeSelector:
+        "kubernetes.io/os": windows
+      containers:
+        - name: movie-rentals-app
+          image: <Container Image>
+          imagePullPolicy: Always
+          env:
+            - name: MovieDBContext
+              value: "<DB Connection String>"
+          resources:
+            requests:
+              cpu: "1000m"
+              memory: "512Mi"
+            limits:
+              cpu: "2000m"
+              memory: "1Gi"
+          ports:
+            - containerPort: 80
